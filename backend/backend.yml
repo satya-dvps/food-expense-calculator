@@ -1,0 +1,73 @@
+- name: setup backend application on ubuntu
+  hosts: backend
+  become: yes
+
+  tasks:
+    - name: Remove existing NodeJS if present
+      ansible.builtin.apt:
+        name: nodejs
+        state: absent
+
+    - name: install nodejs 20
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
+        update_cache: yes
+
+    - name: create expense user
+      ansible.builtin.user:
+        name: expense
+        shell: /sbin/nologin
+        system: yes
+
+    - name: create application directory
+      ansible.builtin.file:
+        path: /app
+        state: directory
+        owner: expense
+        group: expense
+        mode: "0755"
+
+    - name: download backend application
+      ansible.builtin.get_url: 
+        url: https://expense-artifacts.s3.amazonaws.com/expense-backend-v2.zip
+        dest: /tmp/backend.zip
+    
+    - name: extract backend application
+      ansible.builtin.unarchive:
+        src: /tmp/backend.zip
+        dest: /app
+        remote_src: yes
+        owner: expense
+        group: expense
+
+    - name: install npm dependencies
+      ansible.builtin.command: npm install
+      args:
+        chdir: /app
+      become_user: expense
+
+    - name: create backend system service
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/backend.service
+        content: |
+          [Unit]
+          Description=Expense Backend Service
+
+          [Service]
+          User=expense
+          Environment=DB_HOST=172.31.68.194
+          ExecStart=/usr/bin/node /app/index.js
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: reload systemd
+      ansible.builtin.command: systemctl daemon-reload
+
+    - name: enable and start backend service
+      ansible.builtin.service:
+        name: backend
+        state: started
+        enabled: yes
