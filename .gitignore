@@ -1,0 +1,21 @@
+# NodeJS
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+
+# VS Code settings (optional)
+.vscode/
+
+# Ansible retry files
+*.retry
