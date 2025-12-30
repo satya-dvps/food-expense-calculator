@@ -1,0 +1,43 @@
+- name: install and start nginx on front end server
+  hosts: frontend
+  become: yes
+
+  tasks: 
+    - name: install nginx
+      ansible.builtin.apt:
+        name: 
+          - nginx
+          - unzip    
+        state: present
+        update_cache: yes
+
+    - name: remove default nginx content
+      ansible.builtin.file:
+        path: /var/www/html
+        state: absent
+
+    - name: recreate nginx html directory
+      ansible.builtin.file:
+        path: /var/www/html
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: "0755"
+
+    - name: download frontend content
+      ansible.builtin.get_url:
+        url: https://expense-artifacts.s3.amazonaws.com/expense-frontend-v2.zip
+        dest: /tmp/frontend.zip
+
+    - name: extract frontend content
+      ansible.builtin.unarchive:
+        src: /tmp/frontend.zip
+        dest: /var/www/html
+        remote_src: yes
+
+    - name: enable and start nginx service
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: yes
+    
