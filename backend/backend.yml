@@ -48,12 +48,12 @@
       args:
         chdir: /app
       
-      - name: Fix ownership of app directory
-        ansible.builtin.file:
-          path: /app
-          owner: expense
-          group: expense
-          recurse: yes
+    - name: Fix ownership of app directory
+      ansible.builtin.file:
+        path: /app
+        owner: expense
+        group: expense
+        recurse: yes
 
     - name: create backend system service
       ansible.builtin.copy:
