@@ -8,9 +8,11 @@
         name: nodejs
         state: absent
 
-    - name: install nodejs 20
+    - name: install nodejs 20 and unzip
       ansible.builtin.apt:
-        name: nodejs
+        name: 
+          - nodejs
+          - unzip
         state: present
         update_cache: yes
 
