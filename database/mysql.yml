@@ -1,0 +1,46 @@
+- name: setup mysql database server
+  hosts: database
+  become: yes
+
+  tasks:
+    - name: install mysql server
+      ansible.builtin.apt:
+        name: mysql-server
+        state: present
+        update_cache: yes
+
+    - name: enable and start mysql service
+      ansible.builtin.service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Set MySQL root password
+      ansible.builtin.shell: |
+        mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ExpenseApp@1';"
+      args:
+        executable: /bin/bash
+      ignore_errors: yes
+
+    - name: Allow remote connections
+      ansible.builtin.lineinfile:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf
+        regexp: '^bind-address'
+        line: 'bind-address = 0.0.0.0'
+
+    - name: Restart MySQL service
+      ansible.builtin.service:
+        name: mysql
+        state: restarted
+
+    - name: Install MySQL client
+      ansible.builtin.apt:
+        name: mysql-client
+        state: present
+
+
+    - name: Load backend schema
+      ansible.builtin.shell: |
+        mysql -uroot -pExpenseApp@1 < /app/schema/backend.sql
+      args:
+        executable: /bin/bash
