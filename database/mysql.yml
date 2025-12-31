@@ -38,9 +38,19 @@
         name: mysql-client
         state: present
 
+    - name: Download backend schema
+      ansible.builtin.get_url:
+        url: https://expense-artifacts.s3.amazonaws.com/expense-backend-v2.zip
+        dest: /tmp/backend.zip
+
+    - name: Extract backend schema
+      ansible.builtin.unarchive:
+        src: /tmp/backend.zip
+        dest: /tmp
+        remote_src: yes
 
     - name: Load backend schema
       ansible.builtin.shell: |
-        mysql -uroot -pExpenseApp@1 < /app/schema/backend.sql
+        mysql -uroot -pExpenseApp@1 < /tmp/schema/backend.sql
       args:
         executable: /bin/bash
