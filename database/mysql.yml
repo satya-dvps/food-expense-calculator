@@ -5,7 +5,10 @@
   tasks:
     - name: install mysql server
       ansible.builtin.apt:
-        name: mysql-server
+        name: 
+          - mysql-server
+          - mysql-client
+          - unzip
         state: present
         update_cache: yes
 
