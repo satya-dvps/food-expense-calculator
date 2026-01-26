@@ -1,15 +1,15 @@
-# Food Expense Calculator
+## DevOps Responsibilities Implemented
+- Provisioned and configured Linux servers for application hosting
+- Automated configuration management using Ansible
+- Deployed frontend using Nginx with reverse proxy configuration
+- Configured backend NodeJS application as a systemd service
+- Installed and secured MySQL database
+- Implemented environment-based configuration
+- Followed non-root execution and Linux security best practices
 
-End-to-end DevOps project built as part of CloudTrain curriculum.
-
-## Architecture
-- Frontend: Nginx (static + reverse proxy)
-- Backend: NodeJS (port 8080, systemd service)
-- Database: MySQL 8
-
-## Automation
-- Configuration management using Ansible
-- Separate inventories and playbooks per component
-
-## Goal
-Learn DevOps tools by automating a real-world application step by step.
+## DevOps Skills Demonstrated
+- Linux system administration (users, permissions, services)
+- Configuration management with Ansible
+- Application deployment automation
+- Service management using systemd
+- Infrastructure-level troubleshooting
